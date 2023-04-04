@@ -3,8 +3,8 @@
         <div class="card m-2" style="width: 50rem;">
             <div class="card-header" style="display:flex;justify-content: space-between;">
                 <span>#{{ $index+1 }} {{ $server['name'] }}</span>
-                <span>Max Level: {{$server['level']}}</span>
-                <span>Class: {{$server['class']}}</span>
+                <span>{{__('custom.maxLevel').': '.$server['level']}}</span>
+                <span>{{__('custom.class').': '.$server['class']}}</span>
                 <span>
                     @foreach(explode('|',$server['lang']) as $lang)
                         <i class="flag-icon flag-icon-{{trim($lang)}}"></i>

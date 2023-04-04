@@ -12,23 +12,35 @@ use Illuminate\Support\Facades\Validator;
 class VoteController extends Controller
 {
 
+    public function cleanUpURL($url)
+    {
+        $url = str_replace("www.", "", $url);
+        $url = str_replace("http://", "", $url);
+        $url = str_replace("https://", "", $url);
+        return rtrim($url, "/");
+    }
+
     public function getVotePage(Request $request)
     {
         $referer = $request->headers->get('referer');
-        $domainList = Server::all()->pluck('url');
-        if ($referer != null && ($domainList->contains(rtrim($referer, "/"))
-                || $domainList->contains($referer) || str_contains($referer, "https://www.metin2toplist.eu"))) {
-            $serverToken = $request->serverToken;
-            $accountId = $request->accountId;
-            if (isset($serverToken) && isset($accountId)) {
-                $server = Server::where('server_token', $serverToken)->first();
-                if (isset($server)) {
-                    return view('vote', ['serverToken' => $serverToken ?? null, 'accountId' => $accountId ?? null]);
-                }
-                return view('error')->withErrors('Unknown server');
+        $domainList = Server::all()->pluck('url')->toArray();
+        $referer = self::cleanUpURL($referer);
+        foreach ($domainList as &$domain) {
+            $domain = self::cleanUpURL($domain);
+        }
+        if (($referer != null && in_array($referer, $domainList))
+            || str_contains($referer, "https://www.metin2toplist.eu")) {
+        $serverToken = $request->serverToken;
+        $accountId = $request->accountId;
+        if (isset($serverToken) && isset($accountId)) {
+            $server = Server::where('server_token', $serverToken)->first();
+            if (isset($server)) {
+                return view('vote', ['serverToken' => $serverToken ?? null, 'accountId' => $accountId ?? null]);
             }
             return view('error')->withErrors('Unknown server');
         }
+        return view('error')->withErrors('Unknown server');
+    }
         return view('error')->withErrors('Unknown server');
     }
 

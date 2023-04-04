@@ -14,7 +14,7 @@
 
     <meta name="theme-color" content="#ffffff">
 
-    <title>Metin2Toplist-Vote</title>
+    <title>Metin2Toplist - Vote</title>
     <script
         src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -69,7 +69,7 @@
                 <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                 <input type="hidden" name="action" value="validate_captcha">
 
-                <button type="submit" id="voteSubmit" class="glow-on-hover">vote</button>
+                <button type="submit" id="voteSubmit" class="glow-on-hover">{{__('custom.vote')}}</button>
             </form>
         </div>
     @else

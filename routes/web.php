@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,12 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('locale/{locale}', function ($locale) {
+    Session::put('locale', $locale);
+    Controller::setlocale($locale);
+    return redirect()->back();
+});
 
 
 Route::get('/', [Controller::class, 'getServers'])->name('welcome');

@@ -12,7 +12,8 @@
             <span style="color: whitesmoke!important;">Problems ? Volvox#7662</span>
         @endif
     </div>
-    <span style="font-size: xx-small">Metin2, das Metin2 Logo und Metin2 Grafiken sind Marken der YMIR. Co., Ltd. Metin2 Deutschland wird herausgegeben von Gameforge 4D GmbH. Weitere hier verwendete Kennzeichen sind Marken ihrer jeweiligen Eigentümer. Wir stehen in keinerlei Verbindung oder Partnerschaft zu ihnen. Dies ist eine Metin2 P Server Toplist für Metin2 privat Server.</span>
+    <span style="font-size: xx-small">{{__('custom.footerText1')}}</span>
+    <span style="font-size: xx-small">{{__('custom.footerText2')}}</span>
     <!-- Copyright -->
 </footer>
 <!-- Footer -->
