@@ -28,10 +28,9 @@ class AdminController extends Controller
                 'serversCheck' => $serversCheck,
                 'serversBlock' => $serversBlock,
                 'serversOkay' => $serversOkay,
-                'users'=>User::all()
+                'users' => User::all()
             ]);
         }
-
         return redirect()->route("login")->withErrors('Opps! You do not have access');
     }
 

@@ -9,6 +9,7 @@ body, html {
     background-repeat: no-repeat;
     background-size: cover;
 }
+
 .login-from {
     opacity: 0;
     position: absolute;
@@ -19,47 +20,49 @@ body, html {
     z-index: -1;
 }
 
-#voteForm{
+#voteForm {
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.login-dark{
+
+.login-dark {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .login-dark form {
-    max-width:320px;
-    background-color:#1e2833;
-    border-radius:4px;
-    transform:translate(-50%, -50%);
-    position:absolute;
-    top:50%;
-    left:50%;
-    color:#fff;
-    box-shadow:3px 3px 4px rgba(0,0,0,0.2);
+    max-width: 320px;
+    background-color: #1e2833;
+    border-radius: 4px;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: #fff;
+    box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.2);
 }
 
 .login-dark form .form-control {
-    background:none;
-    border:none;
-    border-bottom:1px solid #434a52;
-    border-radius:0;
-    box-shadow:none;
-    outline:none;
-    color:inherit;
+    background: none;
+    border: none;
+    border-bottom: 1px solid #434a52;
+    border-radius: 0;
+    box-shadow: none;
+    outline: none;
+    color: inherit;
 }
+
 .login-dark form .btn-dark {
-    background:rgba(0,0,0,0.2);
-    border:none;
-    border-radius:4px;
-    padding:11px;
-    box-shadow:none;
-    margin-top:26px;
-    text-shadow:none;
-    outline:none;
+    background: rgba(0, 0, 0, 0.2);
+    border: none;
+    border-radius: 4px;
+    padding: 11px;
+    box-shadow: none;
+    margin-top: 26px;
+    text-shadow: none;
+    outline: none;
 }
 
 .glow-on-hover {
@@ -74,12 +77,13 @@ body, html {
     z-index: 0;
     border-radius: 10px;
 }
+
 .glow-on-hover:before {
     content: '';
     background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
     position: absolute;
     top: -2px;
-    left:-2px;
+    left: -2px;
     background-size: 400%;
     z-index: -1;
     filter: blur(5px);
@@ -116,7 +120,13 @@ body, html {
 }
 
 @keyframes glowing {
-    0% { background-position: 0 0; }
-    50% { background-position: 400% 0; }
-    100% { background-position: 0 0; }
+    0% {
+        background-position: 0 0;
+    }
+    50% {
+        background-position: 400% 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
 }

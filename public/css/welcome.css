@@ -39,9 +39,11 @@ body {
     margin-left: 0;
     margin-right: 0;
 }
-label{
+
+label {
     font-weight: bold;
 }
+
 .cut-text {
     text-overflow: ellipsis;
     overflow: hidden;

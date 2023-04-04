@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
@@ -38,9 +37,7 @@ class AuthController extends Controller
 
     public function postRegistration(Request $request)
     {
-        //return redirect()->route("login")->withErrors('Disabled');
         $request->validate([
-            //'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
         ]);
@@ -75,7 +72,6 @@ class AuthController extends Controller
 
     public function logout()
     {
-        //Session::flush();
         Auth::logout();
         return redirect()->route('welcome');
     }
