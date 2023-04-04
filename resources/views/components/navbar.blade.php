@@ -24,12 +24,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('howToPage')}}">{{__('custom.howTo')}}</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('locale/de') }}"><i class="flag-icon flag-icon-de"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('locale/en') }}"><i class="flag-icon flag-icon-gb"></i></a>
-                    </li>
+
                     @if(Auth::user()->isAdmin())
                         <li class="nav-item">
                             <a class="nav-link" href="{{route('getAdminPage')}}">{{__('custom.admin')}}</a>
@@ -37,7 +32,7 @@
                     @endif
                 @else
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('register')}}">{{__('custom.register')}}</a>
+                        <a class="nav-link text-white" href="{{route('register')}}">{{__('custom.register')}}</a>
                     </li>
                 @endauth
             </ul>
@@ -45,19 +40,23 @@
 
             <!-- Right elements -->
             <div class="d-flex align-items-center justify-content-start">
-                @auth()
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li>
-                            <a class="dropdown-item text-white" href="{{route('logout')}}">{{__('custom.logout')}}</a>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('locale/de') }}"><i class="flag-icon flag-icon-de"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('locale/en') }}"><i class="flag-icon flag-icon-gb"></i></a>
+                    </li>
+                    @auth()
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{route('logout')}}">{{__('custom.logout')}}</a>
                         </li>
-                    </ul>
-                @else()
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li>
-                            <a class="dropdown-item text-white" href="{{route('login')}}">{{__('custom.login')}}</a>
+                    @else()
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{route('login')}}">{{__('custom.login')}}</a>
                         </li>
-                    </ul>
-                @endauth
+                    @endauth
+                </ul>
             </div>
             <!-- Right elements -->
         </div>

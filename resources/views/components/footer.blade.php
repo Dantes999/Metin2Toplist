@@ -6,7 +6,11 @@
            role="button">
             <img class="footerIcon" src="{{url('/icons/m2dl.png')}}" alt="Image" style="height: 20px"/>
         </a>
-        <a style="color: whitesmoke!important;text-decoration: none" href="{{route('disclaimerPage')}}">Disclaimer</a>
+        <a class="btn " href="https://metin2.dev/" target="_blank"
+           role="button">
+            <img class="footerIcon" src="{{url('/icons/m2dev.png')}}" alt="Image" style="height: 20px"/>
+        </a>
+        <a style="color: whitesmoke!important;text-decoration: none" href="{{route('disclaimerPage')}}">{{__('custom.disclaimer')}}</a>
         <br>
         @if(Auth::check())
             <span style="color: whitesmoke!important;">Problems ? Volvox#7662</span>

@@ -11,6 +11,8 @@ return [
     'logout' => 'Logout',
     'login' => 'Login',
 
+    'disclaimer' => 'Disclaimer',
+
     'maxLevel' => 'Max level',
     'class' => 'Class',
     'vote' => 'Vote',

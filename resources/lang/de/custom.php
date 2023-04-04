@@ -11,6 +11,8 @@ return [
     'logout' => 'Ausloggen',
     'login' => 'Einloggen',
 
+    'disclaimer' => 'Haftungsausschluss',
+
     'maxLevel' => 'Max Level',
     'class' => 'Klasse',
     'vote' => 'Abstimmen',

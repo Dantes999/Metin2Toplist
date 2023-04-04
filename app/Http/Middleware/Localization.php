@@ -11,7 +11,7 @@ class Localization
 
     public function handle($request, Closure $next)
     {
-        $locales = env('LOCALES');
+        $locales = explode(",", env('LOCALES'));
         $session = $request->getSession();
         if (!$session->has(self::SESSION_KEY)) {
             $session->put(self::SESSION_KEY, $request->getPreferredLanguage($locales));
