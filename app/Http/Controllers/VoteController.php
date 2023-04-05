@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 class VoteController extends Controller
 {
 
-    public function cleanUpURL($url)
+    public function cleanUpURL($url): string
     {
         $url = str_replace("www.", "", $url);
         $url = str_replace("http://", "", $url);
@@ -28,20 +28,39 @@ class VoteController extends Controller
         foreach ($domainList as &$domain) {
             $domain = self::cleanUpURL($domain);
         }
-        if (($referer != null && in_array($referer, $domainList))
-            || str_contains($referer, "https://www.metin2toplist.eu")) {
-        $serverToken = $request->serverToken;
-        $accountId = $request->accountId;
-        if (isset($serverToken) && isset($accountId)) {
-            $server = Server::where('server_token', $serverToken)->first();
-            if (isset($server)) {
-                return view('vote', ['serverToken' => $serverToken ?? null, 'accountId' => $accountId ?? null]);
+        if (($referer != null && in_array($referer, $domainList)) || str_contains($referer, "https://www.metin2toplist.eu")) {
+            $serverToken = $request->serverToken;
+            $accountId = $request->accountId;
+            if (isset($serverToken) && isset($accountId)) {
+                $server = Server::where('server_token', $serverToken)->first();
+                if (isset($server)) {
+                    $clientIP = $this->getIp();
+                    if ($server->checkIp == 1 && !isset($request->accountIp)) {
+                        return view('error')->withErrors('Wrong settings');
+                    } else if ($server->checkIp == 1 && $clientIP != trim($request->accountIp)) {
+                        return view('error')->withErrors('Wrong ip');
+                    }
+                    return view('vote', ['serverToken' => $serverToken ?? null, 'accountId' => $accountId ?? null]);
+                }
+                return view('error')->withErrors('Unknown server');
             }
             return view('error')->withErrors('Unknown server');
         }
         return view('error')->withErrors('Unknown server');
     }
-        return view('error')->withErrors('Unknown server');
+
+    public function getIp()
+    {
+        foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key) {
+            if (array_key_exists($key, $_SERVER) === true) {
+                foreach (explode(',', $_SERVER[$key]) as $ip) {
+                    $ip = trim($ip);
+                    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false) {
+                        return $ip;
+                    }
+                }
+            }
+        }
     }
 
     public function checkVote(Request $request): array
