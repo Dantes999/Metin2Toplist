@@ -15,21 +15,21 @@
                                 </label>
                                 <div class="col-md-6">
                                     <input type="text" id="server_name" class="form-control" name="server_name" required
-                                           autofocus>
+                                           autofocus maxlength="50">
                                 </div>
                                 <label for="server_desc" class="col-md-4 col-form-label text-md-right">
                                     Server Description
                                 </label>
                                 <div class="col-md-6">
                                     <input type="text" id="server_desc" class="form-control" name="server_desc"
-                                           placeholder="Describe your server in short words" maxlength="40">
+                                           placeholder="Describe your server in short words" maxlength="100">
                                 </div>
                                 <label for="server_url" class="col-md-4 col-form-label text-md-right">
                                     Server URL
                                 </label>
                                 <div class="col-md-6">
                                     <input type="text" id="server_url" class="form-control" name="server_url"
-                                           placeholder="https://www.YOURSERVER.de">
+                                           placeholder="https://www.YOURSERVER.de" maxlength="50">
                                     <div class="form-text">It is important that you enter the correct url, because the
                                         votes will be verified with this.
                                     </div>
@@ -39,7 +39,7 @@
                                 </label>
                                 <div class="col-md-6">
                                     <input type="number" id="server_level" class="form-control" name="server_level"
-                                           placeholder="99">
+                                           placeholder="99" maxlength="4">
                                 </div>
                                 <label for="server_lang" class="col-md-4 col-form-label text-md-right">
                                     Language
@@ -75,7 +75,7 @@
                                 </div>
                                 <script>
                                     $('#inputFile').bind('change', function () {
-                                        if (this.files[0].size > 800000) {
+                                        if (this.files[0].size > 8000000) {
                                             alert("This file is too big. Max 8 MB.");
                                             document.getElementById("inputFile").value = "";
                                         }
