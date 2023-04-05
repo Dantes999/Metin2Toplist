@@ -13,7 +13,7 @@
                                        value="{{$server->name}}">
                             </div>
                             <form class="card-body" method="POST" action="{{route('update.server')}}"
-                                  enctype="multipart/form-data" id="updateFormCheck">
+                                  enctype="multipart/form-data">
                                 @csrf
                                 <label>API Token:</label>
                                 <input type="text" class="form-control" name="server_api_token"
@@ -60,6 +60,9 @@
                                 <br>
                                 <span>Votes: {{$server->votesCount}}</span>
                                 <input type="hidden" name="serverId" value="{{$server->id}}">
+                                <button type="submit" class="btn btn-primary">
+                                    Update
+                                </button>
                             </form>
                             <div class="card-footer" style="display: flex">
                                 <form method="POST" action="{{route('okayServer')}}">
@@ -74,9 +77,7 @@
                                     <input type="hidden" value="1" name="block">
                                     <button class="btn btn-outline-danger" type="submit">Block</button>
                                 </form>
-                                <button type="submit" class="btn btn-primary" id="updateFormCheckButton">
-                                    Update
-                                </button>
+
                             </div>
                         </div>
                     @endforeach
@@ -94,7 +95,7 @@
                                        value="{{$server->name}}">
                             </div>
                             <form class="card-body" method="POST" action="{{route('update.server')}}"
-                                  enctype="multipart/form-data" id="updateFormBlock">
+                                  enctype="multipart/form-data">
                                 @csrf
                                 <label>API Token:</label>
                                 <input type="text" class="form-control" name="server_api_token"
@@ -142,6 +143,9 @@
                                 <br>
                                 <span>Votes: {{$server->votesCount}}</span>
                                 <input type="hidden" name="serverId" value="{{$server->id}}">
+                                <button type="submit" class="btn btn-primary">
+                                    Update
+                                </button>
                             </form>
                             <div class="card-footer" style="display: flex">
                                 <form method="POST" action="{{route('okayServer')}}">
@@ -150,9 +154,6 @@
                                     <input type="hidden" value="0" name="block">
                                     <button class="btn btn-outline-success" type="submit">Okay</button>
                                 </form>
-                                <button type="submit" class="btn btn-primary" id="updateFormBlockButton">
-                                    Update
-                                </button>
                             </div>
                         </div>
                     @endforeach
@@ -170,7 +171,7 @@
                                        value="{{$server->name}}">
                             </div>
                             <form class="card-body" method="POST" action="{{route('update.server')}}"
-                                  enctype="multipart/form-data" id="updateFormOkay">
+                                  enctype="multipart/form-data">
                                 @csrf
                                 <label>API Token:</label>
                                 <input type="text" class="form-control" name="server_api_token"
@@ -218,13 +219,14 @@
                                 <br>
                                 <span>Votes: {{$server->votesCount}}</span>
                                 <input type="hidden" name="serverId" value="{{$server->id}}">
+
+                                <button type="submit" class="btn btn-primary">
+                                    Update
+                                </button>
                             </form>
 
 
                             <div class="card-footer" style="display: flex">
-                                <button type="submit" class="btn btn-primary" id="updateFormOkayButton">
-                                    Update
-                                </button>
                                 <form method="POST" action="{{route('blockServer')}}">
                                     @csrf
                                     <input type="hidden" value="{{$server->id}}" name="serverId">
@@ -264,22 +266,4 @@
             </details>
         </div>
     </div>
-    </div>
-    <script>
-        let formBlock = document.getElementById("updateFormBlock");
-        document.getElementById("updateFormBlockButton").addEventListener("click", function () {
-            formBlock.submit();
-        });
-
-        let formOkay = document.getElementById("updateFormOkay");
-        document.getElementById("updateFormOkayButton").addEventListener("click", function () {
-            formOkay.submit();
-        });
-
-        let formCheck = document.getElementById("updateFormCheck");
-        document.getElementById("updateFormCheckButton").addEventListener("click", function () {
-            formCheck.submit();
-        });
-
-    </script>
 @endsection

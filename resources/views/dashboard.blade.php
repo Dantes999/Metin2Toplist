@@ -15,7 +15,7 @@
                                 </label>
                                 <div class="col-md-6">
                                     <input type="text" id="server_name" class="form-control" name="server_name" required
-                                           autofocus maxlength="50">
+                                           autofocus maxlength="100">
                                 </div>
                                 <label for="server_desc" class="col-md-4 col-form-label text-md-right">
                                     Server Description

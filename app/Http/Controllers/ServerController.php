@@ -13,8 +13,8 @@ class ServerController extends Controller
     public function createServer(Request $request)
     {
         $request->validate([
-            'server_name' => 'required|max:50',
-            'server_level' => 'numeric|max:4',
+            'server_name' => 'required|max:100',
+            'server_level' => 'numeric|max:9999',
             'server_desc' => 'max:100',
             'server_url' => 'max:50',
         ]);
@@ -72,10 +72,10 @@ class ServerController extends Controller
     public function updateServer(Request $request)
     {
         $request->validate([
-            'server_level' => 'numeric|max:4',
+            'server_level' => 'numeric|max:9999',
             'server_lang' => 'max:30',
             'server_desc' => 'max:100',
-            'server_name' => 'max:50',
+            'server_name' => 'max:100',
             'server_url' => 'max:50',
         ]);
 
