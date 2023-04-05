@@ -102,7 +102,7 @@ class ServerController extends Controller
                     $server->class = $request->server_class;
                 }
                 if (isset($request->server_banner)) {
-                    if ($request->server_banner->getSize() > 800000) {
+                    if ($request->server_banner->getSize() > 8000000) {
                         return redirect()->route("dashboard")->withErrors('Banner is too big. Max 8MB.');
                     }
                     $allowedFileExtension = ['jpg', 'png', 'jpeg', 'gif', 'mp4'];
