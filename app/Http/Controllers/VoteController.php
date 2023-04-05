@@ -21,31 +21,65 @@ class VoteController extends Controller
         return rtrim($url, "/");
     }
 
+    public function checkProxy(): bool
+    {
+        $test_HTTP_proxy_headers = array(
+            'HTTP_VIA',
+            'VIA',
+            'Proxy-Connection',
+            //'HTTP_X_FORWARDED_FOR',
+            'HTTP_FORWARDED_FOR',
+            'HTTP_X_FORWARDED',
+            'HTTP_FORWARDED',
+            'HTTP_CLIENT_IP',
+            'HTTP_FORWARDED_FOR_IP',
+            'X-PROXY-ID',
+            'MT-PROXY-ID',
+            'X-TINYPROXY',
+            'X_FORWARDED_FOR',
+            'FORWARDED_FOR',
+            'X_FORWARDED',
+            'FORWARDED',
+            'CLIENT-IP',
+            'CLIENT_IP',
+            'PROXY-AGENT',
+            'HTTP_X_CLUSTER_CLIENT_IP',
+            'FORWARDED_FOR_IP',
+            'HTTP_PROXY_CONNECTION');
+
+        foreach ($test_HTTP_proxy_headers as $header) {
+            if (isset($_SERVER[$header]) && !empty($_SERVER[$header])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public function getVotePage(Request $request)
     {
-        $referer = $request->headers->get('referer');
-        $domainList = Server::all()->pluck('url')->toArray();
-        $referer = self::cleanUpURL($referer);
-        foreach ($domainList as &$domain) {
-            $domain = self::cleanUpURL($domain);
-        }
-        if (($referer != null && in_array($referer, $domainList)) || str_contains($referer, "https://www.metin2toplist.eu")) {
-            $serverToken = $request->serverToken;
-            $accountId = $request->accountId;
-            if (isset($serverToken) && isset($accountId)) {
-                $server = Server::where('server_token', $serverToken)->first();
-                if (isset($server)) {
-                    $clientIP = $this->getIp();
-                    if ($server->checkIp == 1 && !isset($request->accountIp)) {
-                        return view('error')->withErrors('Wrong settings');
-                    } else if ($server->checkIp == 1 && $clientIP != trim($request->accountIp)) {
-                        return view('error')->withErrors('Wrong ip');
-                    }
-                    return view('vote', ['serverToken' => $serverToken ?? null, 'accountId' => $accountId ?? null]);
-                }
-                return view('error')->withErrors('Unknown server');
+        if ($this->checkProxy()) {
+            $referer = $request->headers->get('referer');
+            $domainList = Server::all()->pluck('url')->toArray();
+            $referer = self::cleanUpURL($referer);
+            foreach ($domainList as &$domain) {
+                $domain = self::cleanUpURL($domain);
             }
-            return view('error')->withErrors('Unknown server');
+            if (($referer != null && in_array($referer, $domainList)) || str_contains($referer, "https://www.metin2toplist.eu")) {
+                $serverToken = $request->serverToken;
+                $accountId = $request->accountId;
+                if (isset($serverToken) && isset($accountId)) {
+                    $server = Server::where('server_token', $serverToken)->first();
+                    if (isset($server)) {
+                        $clientIP = $this->getIp();
+                        if ($server->checkIp == 1 && !isset($request->playerIp) && !isset($request->playerName)) {
+                            return view('error')->withErrors('Wrong settings');
+                        } else if ($server->checkIp == 1 && $clientIP != trim($request->playerIp)) {
+                            return view('error')->withErrors('Please use the IP address of the character named ' . $request->playerName);
+                        }
+                        return view('vote', ['serverToken' => $serverToken ?? null, 'accountId' => $accountId ?? null]);
+                    }
+                }
+            }
         }
         return view('error')->withErrors('Unknown server');
     }
@@ -124,7 +158,7 @@ class VoteController extends Controller
                 "https://www.google.com/recaptcha/api/siteverify?secret=" . env('RECAPTCHA_SECRET_KEY') . "&response=" . $captcha . "&remoteip=" . $_SERVER['REMOTE_ADDR']
             );
             $response = json_decode($response);
-            return ($response->success && $response->score >= 0.5);
+            return ($response->success && $response->score >= 0.8);
         }
         return false;
     }

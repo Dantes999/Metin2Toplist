@@ -46,7 +46,7 @@ class ServerController extends Controller
             $server->server_token = $server_token;
 
             $server->status = 'check';
-
+            $server->checkIp = 1;
             if (isset($request->server_banner)) {
                 if ($request->server_banner->getSize() > 8000000) {
                     return redirect()->route("dashboard")->withErrors('Banner is too big. Max 8MB.');
