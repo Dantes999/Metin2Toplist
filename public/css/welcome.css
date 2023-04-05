@@ -48,3 +48,7 @@ label {
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+.navbar-toggler {
+    border-color: white !important;
+}
