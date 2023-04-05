@@ -26,18 +26,21 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
             crossorigin="anonymous"></script>
+    <script src='https://www.hCaptcha.com/1/api.js' async defer></script>
 
-    <script src="https://www.google.com/recaptcha/api.js?render={{env('RECAPTCHA_SITE_KEY')}}"></script>
+    <!--<script src="https://www.google.com/recaptcha/api.js?render={{env('RECAPTCHA_SITE_KEY')}}"></script>
     <script>
         grecaptcha.ready(function () {
+            console.log("grecaptcha rdy")
             grecaptcha.execute('{{env('RECAPTCHA_SITE_KEY')}}', {action: 'validate_captcha'})
                 .then(function (token) {
+                    console.log(token)
                     if (document.getElementById('g-recaptcha-response') != null) {
                         document.getElementById('g-recaptcha-response').value = token;
                     }
                 });
         });
-    </script>
+    </script>-->
     <link href="{{ asset('css/vote.css?v=').time() }}" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -66,11 +69,12 @@
                 <label class="login-from" for="accountId"></label>
                 <input class="login-from" autocomplete="off" type="text" id="accountId" name="accountId"
                        placeholder="Your accountId here">
-                <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
-                <input type="hidden" name="action" value="validate_captcha">
-
+                <!-- <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                 <input type="hidden" name="action" value="validate_captcha">-->
+                <div class="h-captcha" data-sitekey="ee44a84f-19aa-4c0d-a5db-06810b9acf92"></div>
                 <button type="submit" id="voteSubmit" class="glow-on-hover">{{__('custom.vote')}}</button>
             </form>
+
         </div>
     @else
         <div class="alert alert-danger alert-dismissible fade show" role="alert">

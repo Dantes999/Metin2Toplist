@@ -9,6 +9,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+
 class VoteController extends Controller
 {
 
@@ -106,56 +107,67 @@ class VoteController extends Controller
             $blockIp->save();
             return view('error', ['msg' => 'Blocked because of Spam']);
         }
-        $captcha = $request->get('g-recaptcha-response');
-        if ($captcha != null) {
-            $response = file_get_contents(
-                "https://www.google.com/recaptcha/api/siteverify?secret=" . env('RECAPTCHA_SECRET_KEY') . "&response=" . $captcha . "&remoteip=" . $_SERVER['REMOTE_ADDR']
-            );
-            $response = json_decode($response);
-            if ($response->success === false) {
-                return view('error')->withErrors('Recaptcha error');
-            } elseif ($response->success && $response->score >= 0.5) {
 
-                $serverToken = $request->Q5bHgjeKWUTRzVMLYNYfR;
-                $accountId = $request->w3vQTdZHqpAvFvbj76zDv;
+        $hCaptcha = $request->get('h-captcha-response');
+        $params = [
+            "secret" => env('HCAPTCHA_SECRET_KEY'),
+            "response" => $hCaptcha
+        ];
+        $verify = curl_init();
+        curl_setopt($verify, CURLOPT_URL, "https://hcaptcha.com/siteverify");
+        curl_setopt($verify, CURLOPT_POST, true);
+        curl_setopt($verify, CURLOPT_POSTFIELDS, http_build_query($params));
+        curl_setopt($verify, CURLOPT_RETURNTRANSFER, true);
+        $hCaptchaResponse = curl_exec($verify);
+        $responseData = json_decode($hCaptchaResponse);
+        if ($responseData->success) {
+            /*$captcha = $request->get('g-recaptcha-response');
+            if ($captcha != null) {
+                $response = file_get_contents(
+                    "https://www.google.com/recaptcha/api/siteverify?secret=" . env('RECAPTCHA_SECRET_KEY') . "&response=" . $captcha . "&remoteip=" . $_SERVER['REMOTE_ADDR']
+                );
+                $response = json_decode($response);
+                if ($response->success && $response->score >= 0.5) {
+            */
+            $serverToken = $request->Q5bHgjeKWUTRzVMLYNYfR;
+            $accountId = $request->w3vQTdZHqpAvFvbj76zDv;
 
-                if (isset($serverToken) && isset($accountId)) {
+            if (isset($serverToken) && isset($accountId)) {
 
-                    $validator = Validator::make(['serverToken' => $serverToken, 'accountId' => $accountId], [
-                        'serverToken' => 'required | alpha_num',
-                        'accountId' => 'required | numeric'
-                    ]);
+                $validator = Validator::make(['serverToken' => $serverToken, 'accountId' => $accountId], [
+                    'serverToken' => 'required | alpha_num',
+                    'accountId' => 'required | numeric'
+                ]);
 
-                    if ($validator->fails()) {
-                        return view('error')->withErrors('Wrong Data');
-                    } else {
-                        $server = Server::where('server_token', $serverToken)->first();
-                        if (isset($server)) {
-                            $vote = Votes::firstOrNew(['serverId' => $server->id, 'accountId' => $accountId]);
-                            if (strtotime($vote->updated_at) > strtotime(' - 24 hours')) {
-                                try {
-                                    $nextVoteTime = date('Y - m - d H:i:s', strtotime(' + 24 hours', strtotime($vote->updated_at)));
-                                    $now = new DateTime("now");
-                                    $interval = $now->diff(new DateTime($nextVoteTime));
-                                    return view('error')->withErrors("Last vote was $vote->updated_at. You have to wait $interval->h hours and $interval->i minutes");
-                                } catch (\Exception $e) {
-                                    return view('error')->withErrors("Last vote was $vote->updated_at");
-                                }
-                            }
-                            $vote->votes = $vote->votes + 1;
-                            $vote->checked = false;
-                            $vote->save();
-                            return view('error', ['success' => "You voted successfully. Your Votes: $vote->votes"]);
-                        } else {
-                            return view('error')->withErrors('No Server');
-                        }
-                    }
-                } else {
+                if ($validator->fails()) {
                     return view('error')->withErrors('Wrong Data');
+                } else {
+                    $server = Server::where('server_token', $serverToken)->first();
+                    if (isset($server)) {
+                        $vote = Votes::firstOrNew(['serverId' => $server->id, 'accountId' => $accountId]);
+                        if (strtotime($vote->updated_at) > strtotime(' - 24 hours')) {
+                            try {
+                                $nextVoteTime = date('Y - m - d H:i:s', strtotime(' + 24 hours', strtotime($vote->updated_at)));
+                                $now = new DateTime("now");
+                                $interval = $now->diff(new DateTime($nextVoteTime));
+                                return view('error')->withErrors("Last vote was $vote->updated_at. You have to wait $interval->h hours and $interval->i minutes");
+                            } catch (\Exception $e) {
+                                return view('error')->withErrors("Last vote was $vote->updated_at");
+                            }
+                        }
+                        $vote->votes = $vote->votes + 1;
+                        $vote->checked = false;
+                        $vote->save();
+                        return view('error', ['success' => "You voted successfully. Your Votes: $vote->votes"]);
+                    } else {
+                        return view('error')->withErrors('No Server');
+                    }
                 }
+            } else {
+                return view('error')->withErrors('Wrong Data');
             }
         }
-        return view('error')->withErrors('Recaptcha needed');
+        return view('error')->withErrors('Captcha error ');
     }
 
 }
