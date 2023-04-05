@@ -99,15 +99,8 @@ class VoteController extends Controller
         }
     }
 
-    public function vote(Request $request)
+    public function checkHCaptcha(Request $request): bool
     {
-        if (isset($request->name) || isset($request->email) || isset($request->serverId) || isset($request->accountId)) {
-            $blockIp = new BlockIps();
-            $blockIp->ip = $request->ip();
-            $blockIp->save();
-            return view('error', ['msg' => 'Blocked because of Spam']);
-        }
-
         $hCaptcha = $request->get('h-captcha-response');
         $params = [
             "secret" => env('HCAPTCHA_SECRET_KEY'),
@@ -120,15 +113,33 @@ class VoteController extends Controller
         curl_setopt($verify, CURLOPT_RETURNTRANSFER, true);
         $hCaptchaResponse = curl_exec($verify);
         $responseData = json_decode($hCaptchaResponse);
-        if ($responseData->success) {
-            /*$captcha = $request->get('g-recaptcha-response');
-            if ($captcha != null) {
-                $response = file_get_contents(
-                    "https://www.google.com/recaptcha/api/siteverify?secret=" . env('RECAPTCHA_SECRET_KEY') . "&response=" . $captcha . "&remoteip=" . $_SERVER['REMOTE_ADDR']
-                );
-                $response = json_decode($response);
-                if ($response->success && $response->score >= 0.5) {
-            */
+        return $responseData->success;
+    }
+
+    public function checkReCaptcha(Request $request): bool
+    {
+        $captcha = $request->get('g-recaptcha-response_new');
+        if ($captcha != null) {
+            $response = file_get_contents(
+                "https://www.google.com/recaptcha/api/siteverify?secret=" . env('RECAPTCHA_SECRET_KEY') . "&response=" . $captcha . "&remoteip=" . $_SERVER['REMOTE_ADDR']
+            );
+            $response = json_decode($response);
+            return ($response->success && $response->score >= 0.5);
+        }
+        return false;
+    }
+
+    public function vote(Request $request)
+    {
+        if (isset($request->name) || isset($request->email) || isset($request->serverId) || isset($request->accountId)) {
+            $blockIp = new BlockIps();
+            $blockIp->ip = $request->ip();
+            $blockIp->save();
+            return view('error', ['msg' => 'Blocked because of Spam']);
+        }
+
+        if ($this->checkHCaptcha($request) && $this->checkReCaptcha($request)) {
+
             $serverToken = $request->Q5bHgjeKWUTRzVMLYNYfR;
             $accountId = $request->w3vQTdZHqpAvFvbj76zDv;
 
