@@ -125,62 +125,73 @@
             <pre>
 
 &lt;?php
- class Vote {
-     private $user = '<span style="color: coral">user</span>';
-     private $password = '<span style="color: coral">password</span>';
-     private $db = '<span style="color: coral">account</span>';
-     private $host = '<span style="color: coral">localhost</span>';
-     private $port = <span style="color: coral">3306</span>;
+class Vote
+{
+    private $user = '<span style="color: coral">user</span>';
+    private $password = '<span style="color: coral">password</span>';
+    private $accountDb = '<span style="color: coral">account</span>';
+    private $playerDb = '<span style="color: coral">player</span>';
+    private $host = '<span style="color: coral">localhost</span>';
+    private $port = <span style="color: coral">3306</span>;
 
-     var $config = array(
-         'coins' => <span style="color: coral">100</span>,
-         'serverToken' => '<span style="color: coral">YOUR SERVER-TOKEN</span>',
-         'apiToken' => '<span style="color: coral">YOUR API-TOKEN</span>',
-     );
-     public function checkVoteToplist() {
-         $url = 'https://api.metin2toplist.eu/QpeoTymspwObUz5dlG1D44';
-         $curl = curl_init();
-         curl_setopt($curl, CURLOPT_URL, $url);
-         curl_setopt($curl, CURLOPT_HEADER, 0);
-         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query([
-             'apiToken' => $this->config['apiToken'],
-             'accountId' => $_SESSION['id']]));
-         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-         curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11');
-         $data = curl_exec($curl);
-         $info = curl_getinfo($curl);
-         if (!curl_errno($curl)) {
-             if ($info['http_code'] == 200) {
-                 $data_json = json_decode($data, true);
-                 if ((isset($data_json['count']) && $data_json['count'] != '0') && isset($data_json['lastVote'])) {
-                     $connection = mysqli_connect($this->host, $this->user, $this->password, $this->db);
-                     if (mysqli_connect_errno())
-                     {
-                         echo "Failed to connect to MySQL: " . mysqli_connect_error();
-                         exit();
-                     }
-                     mysqli_query($connection, "UPDATE account SET `coins` = (`coins` + " . $this->config['coins'] . ") WHERE `id` LIKE '" . $_SESSION['id'] . "' LIMIT 1;");
-                     echo "Thanks for voting, you were credited " . $this->config['coins'] . " Coins.";
-                 } else {
-                     if (isset($data_json['lastVote'])) {
-                         echo "You have already voted! You can only vote every 24 hours. Last vote: " . date('Y-M-d H:i:s', $data_json['lastVote']);
-                     } else {
-                         echo $data_json['error'];
-                     }
-                 }
-             } else {
-                 echo "Error: API URL cannot be reached.";
-             }
-         }
-         curl_close($curl);
-     }
- }
- $vote = new Vote();
+    var $config = array(
+        'coins' => <span style="color: coral">100</span>,
+        'serverToken' => '<span style="color: coral">YOUR SERVER-TOKEN</span>',
+        'apiToken' => '<span style="color: coral">YOUR API-TOKEN</span>',
+    );
+    public function checkVoteToplist()
+    {
+        $url = 'https://api.metin2toplist.eu/QpeoTymspwObUz5dlG1D44';
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query([
+            'apiToken' => $this->config['apiToken'],
+            'accountId' => $_SESSION['id']]));
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11');
+        $data = curl_exec($curl);
+        $info = curl_getinfo($curl);
+        if (!curl_errno($curl)) {
+            if ($info['http_code'] == 200) {
+                $data_json = json_decode($data, true);
+                if ((isset($data_json['count']) && $data_json['count'] != '0') && isset($data_json['lastVote'])) {
+                    $connection = mysqli_connect($this->host, $this->user, $this->password, $this->accountDb);
+                    if (mysqli_connect_errno()) {
+                        echo "Failed to connect to MySQL: " . mysqli_connect_error();
+                        exit();
+                    }
+                    mysqli_query($connection, "UPDATE account SET `coins` = (`coins` + " . $this->config['coins'] . ") WHERE `id` = '" . $_SESSION['id'] . "' LIMIT 1;");
+                    mysqli_close($connection);
+                    echo "Thanks for voting, you were credited " . $this->config['coins'] . " Coins.";
+                } else {
+                    if (isset($data_json['lastVote'])) {
+                        echo "You have already voted! You can only vote every 24 hours. Last vote: " . date('Y-M-d H:i:s', $data_json['lastVote']);
+                    } else {
+                        echo $data_json['error'];
+                    }
+                }
+            } else {
+                echo "Error: API URL cannot be reached.";
+            }
+        }
+        curl_close($curl);
+    }
+}
 
- if(isset($_POST['checkVote']) && isset($_SESSION['id'])){
-     $vote->checkVoteToplist();
- }
+$vote = new Vote();
+
+if (isset($_POST['checkVote']) && isset($_SESSION['id'])) {
+    $vote->checkVoteToplist();
+}
+$connection = mysqli_connect($this->host, $this->user, $this->password, $this->playerDb);
+if (mysqli_connect_errno()) {
+    echo("Failed to connect to MySQL: " . mysqli_connect_error());
+} else {
+    $player = mysqli_query($connection, "SELECT name,ip FROM player WHERE `account_id` = '" . $_SESSION['id'] . "' LIMIT 1;");
+    mysqli_close($connection);
+}
  ?&gt;
 &lt;div class="container"&gt;
 	&lt;h2&gt;Vote 4 Coins&lt;/h2&gt;
@@ -194,7 +205,7 @@
 		&lt;h4&gt;Metin2Toplist.eu&lt;/h4&gt;
 		&lt;div style="display: flex;justify-content:space-evenly;"&gt;
 			&lt;button class="btn btn-dark"
-                    onclick="votepopup('https://www.metin2toplist.eu/myUnKHdjFHypUqthVZZmE?serverToken=c0a63abdecb0f571056bfc2c48435e37f266dd02889d939b51d92e2ebf67fb8a&accountId=&lt;?= $_SESSION['id']?&gt;')" &gt;
+                    onclick="votepopup('https://www.metin2toplist.eu/myUnKHdjFHypUqthVZZmE?serverToken=c0a63abdecb0f571056bfc2c48435e37f266dd02889d939b51d92e2ebf67fb8a&accountId=&lt;?= $_SESSION['id']?&gt;'&playerIp=&lt;?= $player['ip'] ?&gt;&playerName=&lt;?= $player['name'] ?&gt;)" &gt;
 				vote
 			&lt;/button&gt;
 			&lt;form action="?" method="POST"&gt;
