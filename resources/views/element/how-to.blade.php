@@ -102,8 +102,15 @@
     &lt;div&gt;
         &lt;h4&gt;Metin2Toplist.eu&lt;/h4&gt;
         &lt;div&gt;
+             &commat;php
+                 $player = \App\Models\Player::where('account_id',Auth::user()->id)->first();
+                 if(isset($player)){
+                     $playerIp = $player->ip;
+                     $playerName = $player->name;
+                 }
+             &commat;endphp
             &lt;button onclick=&quot;votePopup(&apos;https://www.metin2toplist.eu/myUnKHdjFHypUqthVZZmE?serverToken=<span
-                    style="color: coral">YOUR SERVER-TOKEN</span>&accountId=&#123;&#123;Auth::user()->id&#125;&#125;&apos;)&quot;&gt;
+                    style="color: coral">YOUR SERVER-TOKEN</span>&accountId=&#123;&#123;Auth::user()->id&#125;&#125;&playerIp=&#123;&#123;$playerIp??null&#125;&#125;&playerName=&#123;&#123;$playerName??null&#125;&#125;&apos;)&quot;&gt;
                 vote
             &lt;/button&gt;
             &lt;button class=&quot;btn btn-dark&quot; onclick=&quot;checkVote(&apos;&#123;&#123;route(&apos;checkVoteToplist&apos;)&#125;&#125;&apos;)&quot;&gt;
@@ -127,12 +134,12 @@
 &lt;?php
 class Vote
 {
-    private $user = '<span style="color: coral">user</span>';
-    private $password = '<span style="color: coral">password</span>';
-    private $accountDb = '<span style="color: coral">account</span>';
-    private $playerDb = '<span style="color: coral">player</span>';
-    private $host = '<span style="color: coral">localhost</span>';
-    private $port = <span style="color: coral">3306</span>;
+    public $user = '<span style="color: coral">user</span>';
+    public $password = '<span style="color: coral">password</span>';
+    public $accountDb = '<span style="color: coral">account</span>';
+    public $playerDb = '<span style="color: coral">player</span>';
+    public $host = '<span style="color: coral">localhost</span>';
+    public $port = <span style="color: coral">3306</span>;
 
     var $config = array(
         'coins' => <span style="color: coral">100</span>,
@@ -185,11 +192,12 @@ $vote = new Vote();
 if (isset($_POST['checkVote']) && isset($_SESSION['id'])) {
     $vote->checkVoteToplist();
 }
-$connection = mysqli_connect($this->host, $this->user, $this->password, $this->playerDb);
+$connection = mysqli_connect($vote->host, $vote->user, $vote->password, $vote->playerDb);
 if (mysqli_connect_errno()) {
     echo("Failed to connect to MySQL: " . mysqli_connect_error());
 } else {
-    $player = mysqli_query($connection, "SELECT name,ip FROM player WHERE `account_id` = '" . $_SESSION['id'] . "' LIMIT 1;");
+    $player = mysqli_query($connection, "SELECT name,ip FROM player WHERE `account_id` = '" . $_SESSION['id'] . "' ORDER BY level DESC, exp LIMIT 1;");
+    $player = mysqli_fetch_assoc($player);
     mysqli_close($connection);
 }
  ?&gt;

@@ -12,6 +12,21 @@ use Illuminate\Support\Facades\Validator;
 
 class VoteController extends Controller
 {
+    public function readItemNames(): void
+    {
+        config(['app.itemNamesDe' => json_decode(file_get_contents('itemNamesDe.json'), true)]);
+        //config(['app.itemNamesEn' => json_decode(file_get_contents('itemNamesEn.json'), true)]);
+    }
+
+    public function getRandomItems(): array
+    {
+        $itemNamesDe = config('app.itemNamesDe');
+        $key1 = array_rand($itemNamesDe);
+        $key2 = array_rand($itemNamesDe);
+        $key3 = array_rand($itemNamesDe);
+        $key4 = array_rand($itemNamesDe);
+        return [$key1 => $itemNamesDe[$key1], $key2 => $itemNamesDe[$key2], $key3 => $itemNamesDe[$key3], $key4 => $itemNamesDe[$key4]];
+    }
 
     public function cleanUpURL($url): string
     {
@@ -72,16 +87,25 @@ class VoteController extends Controller
                     if (isset($server)) {
                         $clientIP = $this->getIp();
                         if ($server->checkIp == 1 && !isset($request->playerIp) && !isset($request->playerName)) {
-                            return view('error')->withErrors('Wrong settings');
+                            return view('error')->withErrors('Wrong settings. Please check your player.');
                         } else if ($server->checkIp == 1 && $clientIP != trim($request->playerIp)) {
                             return view('error')->withErrors('Please use the IP address of the character named ' . $request->playerName);
                         }
-                        return view('vote', ['serverToken' => $serverToken ?? null, 'accountId' => $accountId ?? null]);
+                        $this->readItemNames();
+                        $randomItems = $this->getRandomItems();
+                        $key = array_rand($randomItems);
+                        return view('vote', ['serverToken' => $serverToken ?? null,
+                            'accountId' => $accountId ?? null,
+                            'playerIp' => $request->playerIp,
+                            'playerName' => $request->playerName,
+                            'items' => $randomItems,
+                            'selectedItem' => [$key => $randomItems[$key]]
+                        ]);
                     }
                 }
             }
         }
-        return view('error')->withErrors('Unknown server');
+        return view('error')->withErrors("Don't use proxy or vpn. Don't open this URL in another window.");
     }
 
     public function getIp()
@@ -173,17 +197,22 @@ class VoteController extends Controller
         }
 
         if ($this->checkHCaptcha($request) && $this->checkReCaptcha($request)) {
-
             $serverToken = $request->Q5bHgjeKWUTRzVMLYNYfR;
             $accountId = $request->w3vQTdZHqpAvFvbj76zDv;
-
-            if (isset($serverToken) && isset($accountId)) {
-
-                $validator = Validator::make(['serverToken' => $serverToken, 'accountId' => $accountId], [
-                    'serverToken' => 'required | alpha_num',
-                    'accountId' => 'required | numeric'
-                ]);
-
+            $playerName = $request->g66ffg7h80hf80h8h8g;
+            $playerIp = $request->IBZIUFF7t8t7t7t7f5Vh7;
+            if (isset($serverToken) && isset($accountId) && isset($playerName) && isset($playerIp)) {
+                $validator = Validator::make([
+                    'serverToken' => $serverToken,
+                    'accountId' => $accountId,
+                    'playerName' => $playerName,
+                    'playerIp' => $playerIp],
+                    [
+                        'serverToken' => 'required | alpha_num',
+                        'playerName' => 'required',
+                        'accountId' => 'required | numeric',
+                        'playerIp' => 'required',
+                    ]);
                 if ($validator->fails()) {
                     return view('error')->withErrors('Wrong Data');
                 } else {
@@ -202,6 +231,8 @@ class VoteController extends Controller
                         }
                         $vote->votes = $vote->votes + 1;
                         $vote->checked = false;
+                        $vote->playerIp = $playerIp;
+                        $vote->playerName = $playerName;
                         $vote->save();
                         return view('error', ['success' => "You voted successfully. Your Votes: $vote->votes"]);
                     } else {

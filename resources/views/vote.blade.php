@@ -32,10 +32,8 @@
     <script src="https://www.google.com/recaptcha/api.js?render={{env('RECAPTCHA_SITE_KEY')}}"></script>
     <script>
         grecaptcha.ready(function () {
-            console.log("grecaptcha rdy")
             grecaptcha.execute('{{env('RECAPTCHA_SITE_KEY')}}', {action: 'validate_captcha'})
                 .then(function (token) {
-                    console.log(token)
                     if (document.getElementById('g-recaptcha-response_new') != null) {
                         document.getElementById('g-recaptcha-response_new').value = token;
                     }
@@ -53,12 +51,25 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
+    @if(isset($items)&&isset($selectedItem) && false)
+        <div style="display: flex; justify-content: center; flex-direction: column;align-items: center;">
+            @php($vnum=array_key_first($selectedItem))
+            <b style="color: whitesmoke">Click Element with Name: {{$selectedItem[$vnum]??'error'}}</b>
+            <div style="display: flex; justify-content: center">
+                @foreach($items as $vnum=>$name)
+                    <img src="{{url('images/items/'.$vnum.'.png')}}" style="height: 50px; width: auto" alt="{{$name}}">
+                @endforeach
+            </div>
+        </div>
+    @endif
     @if(isset($serverToken) and isset($accountId))
         <div class="login-dark">
             <form action="{{route('vote')}}" method="POST" id="voteForm">
                 @csrf
                 <input type="hidden" id="Q5bHgjeKWUTRzVMLYNYfR" name="Q5bHgjeKWUTRzVMLYNYfR" value="{{$serverToken}}">
                 <input type="hidden" id="w3vQTdZHqpAvFvbj76zDv" name="w3vQTdZHqpAvFvbj76zDv" value="{{$accountId}}">
+                <input type="hidden" id="g66ffg7h80hf80h8h8g" name="g66ffg7h80hf80h8h8g" value="{{$playerName}}">
+                <input type="hidden" id="IBZIUFF7t8t7t7t7f5Vh7" name="IBZIUFF7t8t7t7t7f5Vh7" value="{{$playerIp}}">
                 <label class="login-from" for="name"></label>
                 <input class="login-from" autocomplete="off" type="text" id="name" name="name"
                        placeholder="Your name here">
