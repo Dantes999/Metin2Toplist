@@ -79,17 +79,22 @@ class VoteController extends Controller
             foreach ($domainList as &$domain) {
                 $domain = self::cleanUpURL($domain);
             }
-            if (($referer != null && in_array($referer, $domainList)) || str_contains($referer, "https://www.metin2toplist.eu")) {
+            if (($referer != null && in_array($referer, $domainList)) || str_contains($referer, self::cleanUpURL("https://www.metin2toplist.eu"))) {
                 $serverToken = $request->serverToken;
                 $accountId = $request->accountId;
                 if (isset($serverToken) && isset($accountId)) {
                     $server = Server::where('server_token', $serverToken)->first();
                     if (isset($server)) {
                         $clientIP = $this->getIp();
+                        $filterClientIP = substr($clientIP, 0, strrpos($clientIP, '.'));
+                        $filterPlayerIP = substr(trim($request->playerIp), 0, strrpos(trim($request->playerIp), '.'));
                         if ($server->checkIp == 1 && !isset($request->playerIp) && !isset($request->playerName)) {
-                            return view('error')->withErrors('Wrong settings. Please check your player.');
-                        } else if ($server->checkIp == 1 && $clientIP != trim($request->playerIp)) {
-                            return view('error')->withErrors('Please use the IP address of the character named ' . $request->playerName);
+                            return view('error')->withErrors(["Wrong settings. Please check your player."]);
+                        } else if ($server->checkIp == 1 && $filterClientIP != $filterPlayerIP) {
+                            return view('error')->withErrors([
+                                "error1" => "Please use the IP address ($clientIP) of the character named $request->playerName",
+                                "error2" => "Your IP address now: " . trim($request->playerIp)
+                            ]);
                         }
                         $this->readItemNames();
                         $randomItems = $this->getRandomItems();
@@ -105,7 +110,7 @@ class VoteController extends Controller
                 }
             }
         }
-        return view('error')->withErrors("Don't use proxy or vpn. Don't open this URL in another window.");
+        return view('error')->withErrors(["Don't use proxy or vpn. Don't open this URL in another window."]);
     }
 
     public function getIp()
