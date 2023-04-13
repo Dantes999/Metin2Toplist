@@ -92,8 +92,8 @@ class VoteController extends Controller
                             return view('error')->withErrors(["Wrong settings. Please check your player."]);
                         } else if ($server->checkIp == 1 && $filterClientIP != $filterPlayerIP) {
                             return view('error')->withErrors([
-                                "error1" => "Please use the IP address ($clientIP) of the character named $request->playerName",
-                                "error2" => "Your IP address now: " . trim($request->playerIp)
+                                "error1" => "Please use the IP address (".trim($request->playerIp).") of the character named $request->playerName",
+                                "error2" => "Your IP address now: " . $clientIP
                             ]);
                         }
                         $this->readItemNames();
