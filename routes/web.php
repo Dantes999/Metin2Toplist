@@ -59,7 +59,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('f67f76ff8g98h068g8guigiz9', function () {
         return view('element.how-to');
     })->name('howToPage');
-
-
 });
+
+Route::post('test', [VoteController::class, 'checkVote'])->name('checkVote');
 

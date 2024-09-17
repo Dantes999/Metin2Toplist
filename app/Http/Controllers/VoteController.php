@@ -125,12 +125,14 @@ class VoteController extends Controller
                 }
             }
         }
+        return null;
     }
 
     public function checkVote(Request $request): array
     {
         $apiToken = $request->apiToken;
         $accountId = $request->accountId;
+        dd($apiToken,$accountId);
         if (isset($apiToken) && isset($accountId)) {
             $validator = Validator::make(['apiToken' => $apiToken, 'accountId' => $accountId], [
                 'apiToken' => 'required|alpha_num',
