@@ -19,6 +19,6 @@ Route::middleware(['blockIP'])->group(function () {
     Route::post('QpeoTymspwObUz5dlG1D44', [VoteController::class, 'checkVote'])->middleware('throttle:60,1')->name('checkVote');
 });
 
-/*Route::any('{all}', function () {
+Route::any('{all}', function () {
     return redirect()->away('https://www.metin2toplist.eu');
-})->where('all', '^(?!api).*$');*/
+})->where('all', '^(?!api).*$');

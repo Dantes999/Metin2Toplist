@@ -61,5 +61,3 @@ Route::middleware(['auth'])->group(function () {
     })->name('howToPage');
 });
 
-Route::post('test', [VoteController::class, 'checkVote'])->name('checkVote');
-
