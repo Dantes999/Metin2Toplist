@@ -155,7 +155,7 @@
                             </select>
 
                             <label>{{ __('custom.banner') }}:</label>
-                            <img src="banners/{{ $server['banner'] }}" style="max-width: 200px; max-height: 80px;">
+                            <img src="banners/{{ $server['banner'] }}" alt="banner" style="max-width: 200px; max-height: 80px;">
                             <input type="file" name="server_banner" id="inputFile" class="form-control"
                                    accept="image/*">
                             <div class="form-text">{{ __('custom.banner_size_message') }}</div>
