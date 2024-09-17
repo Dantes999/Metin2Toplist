@@ -33,7 +33,7 @@ class Controller extends BaseController
                 $server->class = 'PvP';
             }
         }
-        $servers = array_values($servers->sortByDesc('votesCount')->toArray());
+        $servers = $servers->sortByDesc('votesCount');
         return view('element.servers', ['servers' => $servers]);
     }
 }

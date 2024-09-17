@@ -16,6 +16,23 @@ return [
     'maxLevel' => 'Max level',
     'class' => 'Class',
     'vote' => 'Vote',
+
+
+    'create_new_server' => 'Create New Server',
+    'server_name' => 'Server Name',
+    'server_description' => 'Server Description',
+    'describe_server' => 'Describe your server in short words',
+    'server_url' => 'Server URL',
+    'correct_url_message' => 'It is important that you enter the correct URL, because the votes will be verified with this.',
+    'max_level' => 'Max Level',
+    'language' => 'Language',
+    'lang_format_message' => 'It is important that you enter the language in this format: en|de|tr|ro',
+    'short_form_of_country' => 'Short form of the country',
+    'server_class' => 'Server Class',
+    'oldschool' => 'Oldschool',
+    'middleschool' => 'Middleschool',
+    'newschool' => 'Newschool',
+
     '' => '',
 
 ];
