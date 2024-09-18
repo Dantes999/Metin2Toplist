@@ -20,5 +20,5 @@ Route::middleware(['blockIP'])->group(function () {
 });
 
 Route::any('{all}', function () {
-    return redirect()->away('https://www.metin2toplist.eu');
+    return redirect()->away('https://www.metin2toplist.de');
 })->where('all', '^(?!api).*$');

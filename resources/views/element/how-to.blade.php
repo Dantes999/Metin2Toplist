@@ -11,7 +11,7 @@
             Each server has its own unique API token. It is located in the
             <a style="text-decoration: none" href="{{route('dashboard')}}">dashboard</a><br>
             <b>Example (Laravel):</b>
-            <p>
+            <p>run: composer require guzzlehttp/guzzle</p>
             <details>
             <pre>
  public static function checkVoteToplist() {
@@ -109,7 +109,7 @@
                      $playerName = $player->name;
                  }
              &commat;endphp
-            &lt;button onclick=&quot;votePopup(&apos;https://www.metin2toplist.eu/myUnKHdjFHypUqthVZZmE?serverToken=<span
+            &lt;button onclick=&quot;votePopup(&apos;https://www.metin2toplist.de/myUnKHdjFHypUqthVZZmE?serverToken=<span
                     style="color: coral">YOUR SERVER-TOKEN</span>&accountId=&#123;&#123;Auth::user()->id&#125;&#125;&playerIp=&#123;&#123;$playerIp??null&#125;&#125;&playerName=&#123;&#123;$playerName??null&#125;&#125;&apos;)&quot;&gt;
                 vote
             &lt;/button&gt;
@@ -213,7 +213,7 @@ if (mysqli_connect_errno()) {
 		&lt;h4&gt;Metin2Toplist.eu&lt;/h4&gt;
 		&lt;div style="display: flex;justify-content:space-evenly;"&gt;
 			&lt;button class="btn btn-dark"
-                    onclick="votepopup('https://www.metin2toplist.eu/myUnKHdjFHypUqthVZZmE?serverToken=c0a63abdecb0f571056bfc2c48435e37f266dd02889d939b51d92e2ebf67fb8a&accountId=&lt;?= $_SESSION['id']?&gt;'&playerIp=&lt;?= $player['ip'] ?&gt;&playerName=&lt;?= $player['name'] ?&gt;)" &gt;
+                    onclick="votepopup('https://www.metin2toplist.de/myUnKHdjFHypUqthVZZmE?serverToken=c0a63abdecb0f571056bfc2c48435e37f266dd02889d939b51d92e2ebf67fb8a&accountId=&lt;?= $_SESSION['id']?&gt;'&playerIp=&lt;?= $player['ip'] ?&gt;&playerName=&lt;?= $player['name'] ?&gt;)" &gt;
 				vote
 			&lt;/button&gt;
 			&lt;form action="?" method="POST"&gt;
