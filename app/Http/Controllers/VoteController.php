@@ -65,7 +65,7 @@ class VoteController extends Controller
 
         foreach ($test_HTTP_proxy_headers as $header) {
             if (isset($_SERVER[$header]) && !empty($_SERVER[$header])) {
-                return $header;//false;
+                return false;
             }
         }
         return true;
@@ -73,7 +73,6 @@ class VoteController extends Controller
 
     public function getVotePage(Request $request)
     {
-        dd($this->checkProxy());
         if ($this->checkProxy()) {
             $referer = $request->headers->get('referer');
             $domainList = Server::all()->pluck('url')->toArray();
@@ -81,6 +80,7 @@ class VoteController extends Controller
             foreach ($domainList as &$domain) {
                 $domain = self::cleanUpURL($domain);
             }
+            dd($domain,$referer);
             if (($referer != null && in_array($referer, $domainList)) || str_contains($referer, self::cleanUpURL("https://www.metin2toplist.de"))) {
                 $serverToken = $request->serverToken;
                 $accountId = $request->accountId;
