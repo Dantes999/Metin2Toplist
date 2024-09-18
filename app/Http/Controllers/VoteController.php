@@ -133,8 +133,6 @@ class VoteController extends Controller
         $apiToken = $request->apiToken;
         $accountId = $request->accountId;
 
-        return ['apiToken' => $apiToken, 'accountId' => $accountId];
-
         if (isset($apiToken) && isset($accountId)) {
             $validator = Validator::make(['apiToken' => $apiToken, 'accountId' => $accountId], [
                 'apiToken' => 'required|alpha_num',
