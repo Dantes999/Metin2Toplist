@@ -80,7 +80,7 @@ class VoteController extends Controller
             foreach ($domainList as &$domain) {
                 $domain = self::cleanUpURL($domain);
             }
-            dd($domain,$referer);
+
             if (($referer != null && in_array($referer, $domainList)) || str_contains($referer, self::cleanUpURL("https://www.metin2toplist.de"))) {
                 $serverToken = $request->serverToken;
                 $accountId = $request->accountId;
