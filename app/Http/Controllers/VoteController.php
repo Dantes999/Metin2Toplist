@@ -36,7 +36,7 @@ class VoteController extends Controller
         return rtrim($url, "/");
     }
 
-    public function checkProxy(): bool
+    public function checkProxy()
     {
         $test_HTTP_proxy_headers = array(
             'HTTP_VIA',
@@ -60,11 +60,12 @@ class VoteController extends Controller
             'PROXY-AGENT',
             'HTTP_X_CLUSTER_CLIENT_IP',
             'FORWARDED_FOR_IP',
-            'HTTP_PROXY_CONNECTION');
+            'HTTP_PROXY_CONNECTION'
+        );
 
         foreach ($test_HTTP_proxy_headers as $header) {
             if (isset($_SERVER[$header]) && !empty($_SERVER[$header])) {
-                return false;
+                return $header;//false;
             }
         }
         return true;
@@ -72,6 +73,7 @@ class VoteController extends Controller
 
     public function getVotePage(Request $request)
     {
+        dd($this->checkProxy());
         if ($this->checkProxy()) {
             $referer = $request->headers->get('referer');
             $domainList = Server::all()->pluck('url')->toArray();
@@ -93,7 +95,7 @@ class VoteController extends Controller
                         } else if ($server->checkIp == 1 && $filterClientIP != $filterPlayerIP) {
                             return view('error')->withErrors([
                                 "error1" => "Please use the IP address (".trim($request->playerIp).") of the character named $request->playerName",
-                                "error2" => "Your IP address now: " . $clientIP
+                                "error2" => "Your IP address now: " . $clientIP,
                             ]);
                         }
                         $this->readItemNames();
@@ -104,7 +106,7 @@ class VoteController extends Controller
                             'playerIp' => $request->playerIp,
                             'playerName' => $request->playerName,
                             'items' => $randomItems,
-                            'selectedItem' => [$key => $randomItems[$key]]
+                            'selectedItem' => [$key => $randomItems[$key]],
                         ]);
                     }
                 }
@@ -136,7 +138,7 @@ class VoteController extends Controller
         if (isset($apiToken) && isset($accountId)) {
             $validator = Validator::make(['apiToken' => $apiToken, 'accountId' => $accountId], [
                 'apiToken' => 'required|alpha_num',
-                'accountId' => 'required|numeric'
+                'accountId' => 'required|numeric',
             ]);
             if ($validator->fails()) {
                 return ['count' => null, 'error' => "Wrong Data"];
@@ -169,7 +171,7 @@ class VoteController extends Controller
         $hCaptcha = $request->get('h-captcha-response');
         $params = [
             "secret" => env('HCAPTCHA_SECRET_KEY'),
-            "response" => $hCaptcha
+            "response" => $hCaptcha,
         ];
         $verify = curl_init();
         curl_setopt($verify, CURLOPT_URL, "https://hcaptcha.com/siteverify");
