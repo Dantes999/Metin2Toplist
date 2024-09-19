@@ -82,7 +82,7 @@
                 <label class="login-from" for="accountId"></label>
                 <input class="login-from" autocomplete="off" type="text" id="accountId" name="accountId"
                        placeholder="Your accountId here">
-                <div class="h-captcha" data-sitekey="ee44a84f-19aa-4c0d-a5db-06810b9acf92"></div>
+                <div class="h-captcha" data-sitekey="{{env('HCAPTCHA_SITE_KEY')}}"></div>
                 <input type="hidden" id="g-recaptcha-response_new" name="g-recaptcha-response_new">
                 <input type="hidden" name="action" value="validate_captcha">
                 <button type="submit" id="voteSubmit" class="glow-on-hover">{{__('custom.vote')}}</button>
