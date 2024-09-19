@@ -231,7 +231,7 @@ class VoteController extends Controller
                             $vote = Votes::firstOrNew(['serverId' => $server->id, 'accountId' => $accountId]);
                             if (strtotime($vote->updated_at) > strtotime(' - 24 hours')) {
                                 try {
-                                    $nextVoteTime = date('Y - m - d H:i:s', strtotime(' + 24 hours', strtotime($vote->updated_at)));
+                                    $nextVoteTime = date('Y-m-d H:i:s', strtotime(' + 24 hours', strtotime($vote->updated_at)));
                                     $now = new DateTime("now");
                                     $interval = $now->diff(new DateTime($nextVoteTime));
                                     return view('error')->withErrors("Last vote was $vote->updated_at. You have to wait $interval->h hours and $interval->i minutes");
