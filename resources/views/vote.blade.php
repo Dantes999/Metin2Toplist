@@ -16,9 +16,9 @@
 
     <title>Metin2Toplist - Vote</title>
     <script
-        src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        crossorigin="anonymous"></script>
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
@@ -51,7 +51,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
-    @if(isset($items)&&isset($selectedItem) && false)
+    @if(isset($items) && isset($selectedItem) && false)
         <div style="display: flex; justify-content: center; flex-direction: column;align-items: center;">
             @php($vnum=array_key_first($selectedItem))
             <b style="color: whitesmoke">Click Element with Name: {{$selectedItem[$vnum]??'error'}}</b>

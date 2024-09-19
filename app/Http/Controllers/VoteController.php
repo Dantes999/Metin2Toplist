@@ -38,7 +38,7 @@ class VoteController extends Controller
 
     public function checkProxy()
     {
-        $test_HTTP_proxy_headers = array(
+        $test_HTTP_proxy_headers = [
             'HTTP_VIA',
             'VIA',
             'Proxy-Connection',
@@ -60,8 +60,8 @@ class VoteController extends Controller
             'PROXY-AGENT',
             'HTTP_X_CLUSTER_CLIENT_IP',
             'FORWARDED_FOR_IP',
-            'HTTP_PROXY_CONNECTION'
-        );
+            'HTTP_PROXY_CONNECTION',
+        ];
 
         foreach ($test_HTTP_proxy_headers as $header) {
             if (isset($_SERVER[$header]) && !empty($_SERVER[$header])) {
@@ -92,9 +92,9 @@ class VoteController extends Controller
                         $filterPlayerIP = substr(trim($request->playerIp), 0, strrpos(trim($request->playerIp), '.'));
                         if ($server->checkIp == 1 && !isset($request->playerIp) && !isset($request->playerName)) {
                             return view('error')->withErrors(["Wrong settings. Please check your player."]);
-                        } else if ($server->checkIp == 1 && $filterClientIP != $filterPlayerIP) {
+                        } elseif ($server->checkIp == 1 && $filterClientIP != $filterPlayerIP) {
                             return view('error')->withErrors([
-                                "error1" => "Please use the IP address (".trim($request->playerIp).") of the character named $request->playerName",
+                                "error1" => "Please use the IP address (" . trim($request->playerIp) . ") of the character named $request->playerName",
                                 "error2" => "Your IP address now: " . $clientIP,
                             ]);
                         }
@@ -117,7 +117,7 @@ class VoteController extends Controller
 
     public function getIp()
     {
-        foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key) {
+        foreach (['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR'] as $key) {
             if (array_key_exists($key, $_SERVER) === true) {
                 foreach (explode(',', $_SERVER[$key]) as $ip) {
                     $ip = trim($ip);
@@ -205,54 +205,57 @@ class VoteController extends Controller
             return view('error', ['msg' => 'Blocked because of Spam']);
         }
 
-        if ($this->checkHCaptcha($request) && $this->checkReCaptcha($request)) {
-            $serverToken = $request->Q5bHgjeKWUTRzVMLYNYfR;
-            $accountId = $request->w3vQTdZHqpAvFvbj76zDv;
-            $playerName = $request->g66ffg7h80hf80h8h8g;
-            $playerIp = $request->IBZIUFF7t8t7t7t7f5Vh7;
-            if (isset($serverToken) && isset($accountId) && isset($playerName) && isset($playerIp)) {
-                $validator = Validator::make([
-                    'serverToken' => $serverToken,
-                    'accountId' => $accountId,
-                    'playerName' => $playerName,
-                    'playerIp' => $playerIp],
-                    [
-                        'serverToken' => 'required | alpha_num',
-                        'playerName' => 'required',
-                        'accountId' => 'required | numeric',
-                        'playerIp' => 'required',
-                    ]);
-                if ($validator->fails()) {
-                    return view('error')->withErrors('Wrong Data');
-                } else {
-                    $server = Server::where('server_token', $serverToken)->first();
-                    if (isset($server)) {
-                        $vote = Votes::firstOrNew(['serverId' => $server->id, 'accountId' => $accountId]);
-                        if (strtotime($vote->updated_at) > strtotime(' - 24 hours')) {
-                            try {
-                                $nextVoteTime = date('Y - m - d H:i:s', strtotime(' + 24 hours', strtotime($vote->updated_at)));
-                                $now = new DateTime("now");
-                                $interval = $now->diff(new DateTime($nextVoteTime));
-                                return view('error')->withErrors("Last vote was $vote->updated_at. You have to wait $interval->h hours and $interval->i minutes");
-                            } catch (\Exception $e) {
-                                return view('error')->withErrors("Last vote was $vote->updated_at");
-                            }
-                        }
-                        $vote->votes = $vote->votes + 1;
-                        $vote->checked = false;
-                        $vote->playerIp = $playerIp;
-                        $vote->playerName = $playerName;
-                        $vote->save();
-                        return view('error', ['success' => "You voted successfully. Your Votes: $vote->votes"]);
+        if ($this->checkHCaptcha($request)) {
+            if ($this->checkReCaptcha($request)) {
+                $serverToken = $request->Q5bHgjeKWUTRzVMLYNYfR;
+                $accountId = $request->w3vQTdZHqpAvFvbj76zDv;
+                $playerName = $request->g66ffg7h80hf80h8h8g;
+                $playerIp = $request->IBZIUFF7t8t7t7t7f5Vh7;
+                if (isset($serverToken) && isset($accountId) && isset($playerName) && isset($playerIp)) {
+                    $validator = Validator::make([
+                        'serverToken' => $serverToken,
+                        'accountId' => $accountId,
+                        'playerName' => $playerName,
+                        'playerIp' => $playerIp],
+                        [
+                            'serverToken' => 'required | alpha_num',
+                            'playerName' => 'required',
+                            'accountId' => 'required | numeric',
+                            'playerIp' => 'required',
+                        ]);
+                    if ($validator->fails()) {
+                        return view('error')->withErrors('Wrong Data');
                     } else {
-                        return view('error')->withErrors('No Server');
+                        $server = Server::where('server_token', $serverToken)->first();
+                        if (isset($server)) {
+                            $vote = Votes::firstOrNew(['serverId' => $server->id, 'accountId' => $accountId]);
+                            if (strtotime($vote->updated_at) > strtotime(' - 24 hours')) {
+                                try {
+                                    $nextVoteTime = date('Y - m - d H:i:s', strtotime(' + 24 hours', strtotime($vote->updated_at)));
+                                    $now = new DateTime("now");
+                                    $interval = $now->diff(new DateTime($nextVoteTime));
+                                    return view('error')->withErrors("Last vote was $vote->updated_at. You have to wait $interval->h hours and $interval->i minutes");
+                                } catch (\Exception $e) {
+                                    return view('error')->withErrors("Last vote was $vote->updated_at");
+                                }
+                            }
+                            $vote->votes = $vote->votes + 1;
+                            $vote->checked = false;
+                            $vote->playerIp = $playerIp;
+                            $vote->playerName = $playerName;
+                            $vote->save();
+                            return view('error', ['success' => "You voted successfully. Your Votes: $vote->votes"]);
+                        } else {
+                            return view('error')->withErrors('No Server');
+                        }
                     }
+                } else {
+                    return view('error')->withErrors('Wrong Data');
                 }
-            } else {
-                return view('error')->withErrors('Wrong Data');
             }
+            return view('error')->withErrors('ReCaptcha error ');
         }
-        return view('error')->withErrors('Captcha error ');
+        return view('error')->withErrors('HCaptcha error ');
     }
 
 }
